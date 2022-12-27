@@ -28,13 +28,9 @@ namespace Bussines
             Models.Tickets JsonDeserializado = JsonSerializer.Deserialize<Models.Tickets>(jsonParameter);
             //agrega el json a una lista de objetos con el fin de descomponerlo 
             resultTickets.Objects.Add(JsonDeserializado);
-
-
-
             //se crea un foreach en vcaso de que reciba varios registros 
             foreach (Models.Tickets tickets in resultTickets.Objects)
             {
-
                 var IdTicket = tickets.id;
                 var hs_pipeline = tickets.properties.hs_pipeline;
                 var hs_ticket_priority = tickets.properties.hs_ticket_priority;
@@ -49,10 +45,7 @@ namespace Bussines
                 var fecha_de_salida = DateTime.Parse(tickets.properties.fecha_de_salida).ToString("yyyy-MM-dd");
                 var numero_de_pasajeros = tickets.properties.numero_de_pasajeros;
                 var tipo_de_intervencion = tickets.properties.tipo_de_intervencion;
-                var grupo_de_agencia = tickets.properties.grupo_de_agencia;
-                //var subs = (hs_pipeline + hs_ticket_priority).ToString();
-                //genBooking.LastModifiedDate = DateTime.Parse(booking.LastModifiedDate, null);
-
+                var grupo_de_agencia = tickets.properties.grupo_de_agencia;     
                 //formato del body 
                 var body = "{\"properties\":" + "{\"hs_pipeline\":\""
                     + hs_pipeline
@@ -85,25 +78,16 @@ namespace Bussines
                     + "\"" + "}}";
 
                 //url y credencial
-                //var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
                 string apiEndPoint = "https://api.hubapi.com/crm/v3/objects/tickets/" + IdTicket;
                 string bearerToken = "pat-na1-a0722dd7-5fd1-49fb-bfbd-ab9a65ebc50b";
-
-                //string apiEndPoint = System.Configuration.ConfigurationManager.AppSettings["apiEndPoint"+ IdTicket].ToString();
-                //string bearerToken = System.Configuration.ConfigurationManager.AppSettings["bearerToken"].ToString();
-
-                //var body = JsonConvert.SerializeObject(jsonParameter);
                 var client = new RestClient(apiEndPoint);
                 var request = new RestRequest(String.Empty, Method.Patch);
                 request.AddHeader("accept", "application/json");
                 request.AddHeader("content-type", "application/json; charset=utf-8");
                 request.AddHeader("authorization", "Bearer " + bearerToken);
                 request.AddParameter("application/json", body, ParameterType.RequestBody);
-
-                //request.AddParameter("application/json", "{\"properties\":{\"hs_pipeline\":\"Pipeline de asistencia técnica\",\"hs_ticket_priority\":\"HIGH\",\"subject\":\"DX2VP5_CANCELACIÓN DE VUELO VIVA**\",\"ruta\":\"MEX\",\"aerolinea\":\"VIVA AEROBUS\",\"tipo_de_incidencia\":\"Afectación\"}}", ParameterType.RequestBody);
-                //request.AddParameter("application/json", "{\"properties\":{\"hs_pipeline\":\"Pipeline de asistencia técnica\",\"hs_ticket_priority\":\"HIGH\",\"subject\":\"PRUEBA DE AJUSTE DE VUELO\",\"ruta\":\"MEX-GDL\",\"aerolinea\":\"AEROMAR\",\"tipo_de_incidencia\":\"Afectación\",\"nivel\":\"\",\"tipo_de_afectacion\":\"\",\"reserva\":\"\",\"numero_de_vuelo_afectado\":\"\",\"fecha_de_salida\":\"\",\"numero_de_pasajeros\":\"\",\"tipo_de_intervencion\":\"\",\"grupo_de_agencia\":\"\"}}", ParameterType.RequestBody);
-
                 var response = client.Execute(request);
+
                 if (response.IsSuccessful)
                 {
                     Console.WriteLine("Se hizo la peticion correctamente");
