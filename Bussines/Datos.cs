@@ -1,8 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿
 using Models;
-//using Newtonsoft.Json;
-//using Newtonsoft.Json.Linq;
-//using Newtonsoft.Json.Serialization;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -12,25 +9,29 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 
 namespace Bussines
 {
     public class Datos
     {
-        //public void Update(Models.Tickets tickets)
+        //recibe el json 
         public void Update(dynamic jsonParameter)
         {
-
-
-
+            
             Models.Result resultTickets = new Models.Result();
             resultTickets.Objects = new List<Object>();
+            //deserealiza el json 
             Models.Tickets JsonDeserializado = JsonSerializer.Deserialize<Models.Tickets>(jsonParameter);
+            //agrega el json a una lista de objetos con el fin de descomponerlo 
             resultTickets.Objects.Add(JsonDeserializado);
 
 
 
-
+            //se crea un foreach en vcaso de que reciba varios registros 
             foreach (Models.Tickets tickets in resultTickets.Objects)
             {
 
@@ -45,18 +46,14 @@ namespace Bussines
                 var tipo_de_afectacion = tickets.properties.tipo_de_afectacion;
                 var reserva = tickets.properties.reserva;
                 var numero_de_vuelo_afectado = tickets.properties.numero_de_vuelo_afectado;
-
-
-                var fecha_de_salida =DateTime.Parse(tickets.properties.fecha_de_salida).ToString("yyyy-MM-dd");
-                //DateTime.TryParse(line.LineCancelledDate, out dtResult)
-                //DateTime dt = DateTime.MinValue;
-
-                //DateTime.TryParseExact("20071122", "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out dt);
+                var fecha_de_salida = DateTime.Parse(tickets.properties.fecha_de_salida).ToString("yyyy-MM-dd");
                 var numero_de_pasajeros = tickets.properties.numero_de_pasajeros;
                 var tipo_de_intervencion = tickets.properties.tipo_de_intervencion;
                 var grupo_de_agencia = tickets.properties.grupo_de_agencia;
                 //var subs = (hs_pipeline + hs_ticket_priority).ToString();
                 //genBooking.LastModifiedDate = DateTime.Parse(booking.LastModifiedDate, null);
+
+                //formato del body 
                 var body = "{\"properties\":" + "{\"hs_pipeline\":\""
                     + hs_pipeline
                     + ("\",\"hs_ticket_priority\":\"")
@@ -87,8 +84,8 @@ namespace Bussines
                     + grupo_de_agencia
                     + "\"" + "}}";
 
-                //body.ToString();
-
+                //url y credencial
+                //var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
                 string apiEndPoint = "https://api.hubapi.com/crm/v3/objects/tickets/" + IdTicket;
                 string bearerToken = "pat-na1-a0722dd7-5fd1-49fb-bfbd-ab9a65ebc50b";
 

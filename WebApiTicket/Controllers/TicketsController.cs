@@ -2,34 +2,31 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-//using Newtonsoft.Json;
-//using Newtonsoft.Json.Linq;
-//using Newtonsoft.Json.Schema;
-//using Newtonsoft.Json.Serialization;
 using RestSharp;
 using System.Security.Cryptography.Xml;
 using System.Text.Json;
 
-//using System.Text.Json.Serialization.Metadata;
+
 
 namespace WebApiTicket.Controllers
 {
-    [Route("api/[controller]")]
+    //Hace referencia al controlador a ejecutar
     [ApiController]
+    [Route("ticket")]
     public class TicketsController : ControllerBase
     {
+        private readonly ILogger<TicketsController> _logger;
+        //verbo
         [HttpPatch]
-        //[Route("api/tickets/Patch/{jsonParameter}")]
-        [Route("api/tickets/Patch/")]
-        public IActionResult Patch(/*int IdTicket,*/ dynamic jsonParameter)
+        //Se coloco solo en caso de que se llegue a enviar un json con muchos registros
+        [RequestSizeLimit(100_000_000)]
+        [Route("Patch")]
+        //se hace el metodo indicandole que el json se colocara dentro del body
+        public IActionResult Patch([FromBody] dynamic jsonParameter)
         {
-           
-
-
+            //Insatancia de la clase datos para enviarle el json
             Bussines.Datos datos = new Bussines.Datos();
             datos.Update(jsonParameter);
-
-
             if (datos.Update != null)
             {
                 return Ok();
