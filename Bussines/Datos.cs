@@ -18,10 +18,11 @@ namespace Bussines
 {
     public class Datos
     {
+        
         //recibe el json 
-        public void Update(dynamic jsonParameter)
+        public static Result Update(dynamic jsonParameter)
         {
-            
+            Result result = new Result();
             Models.Result resultTickets = new Models.Result();
             resultTickets.Objects = new List<Object>();
             //deserealiza el json 
@@ -91,17 +92,26 @@ namespace Bussines
                 if (response.IsSuccessful)
                 {
                     Console.WriteLine("Se hizo la peticion correctamente");
-                    var respuesta = response.Content;
-                    Console.WriteLine(respuesta);
+                    result.respuesta= response.Content;
+                 
+
+                    //result.respuesta= JsonSerializer.Deserialize<Models.Tickets>(res);
+                    result.Correct = true;
+                    Console.WriteLine(result.respuesta);
                 }
                 else
                 {
                     Console.WriteLine("Ocurrio un error en la peticion");
-                    var respuesta = response.ErrorException;
-                    Console.WriteLine(respuesta);
+                    result.Ex = response.ErrorException;
+                    result.Correct = false;
+                    Console.WriteLine(result.Ex);
                 }
+                
             }
+            return result;
+           
         }
+        
     }
 }
 

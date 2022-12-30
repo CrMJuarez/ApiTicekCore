@@ -25,15 +25,19 @@ namespace WebApiTicket.Controllers
         public IActionResult Patch([FromBody] dynamic jsonParameter)
         {
             //Insatancia de la clase datos para enviarle el json
-            Bussines.Datos datos = new Bussines.Datos();
-            datos.Update(jsonParameter);
-            if (datos.Update != null)
+           
+
+            Result result= Datos.Update(jsonParameter);
+
+
+            
+            if (result.Correct == true)
             {
-                return Ok();
+                return Ok(result);
             }
             else
             {
-                return NotFound();
+                return NotFound(result.Ex);
             }
         }
     }

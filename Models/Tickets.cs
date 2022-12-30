@@ -31,4 +31,5 @@ namespace Models
         public string grupo_de_agencia { get; set; }
 
     }
+
 }
